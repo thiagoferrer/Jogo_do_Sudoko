@@ -48,10 +48,27 @@ public class NumberText extends JTextField implements EventListener {
             private void changeSpace() {
                 if (getText().isEmpty()) {
                     space.clearSpace();
+                    setBackground(Color.WHITE);      // limpo
+                    setToolTipText(null);
                     return;
                 }
-                space.setActual(Integer.parseInt(getText()));
+                try {
+                    int v = Integer.parseInt(getText());
+                    space.setActual(v);
+                    if (Integer.valueOf(v).equals(space.getExpected())) {
+                        setBackground(new Color(198, 239, 206)); // verde suave
+                        setToolTipText("Correto");
+                    } else {
+                        setBackground(new Color(255, 199, 206)); // rosa suave
+                        setToolTipText("Valor diferente do esperado");
+                    }
+                } catch (NumberFormatException ex) {
+                    // como você limita a 1 dígito [1..9], isso quase não acontece
+                    setBackground(Color.WHITE);
+                    setToolTipText(null);
+                }
             }
+
         });
     }
 

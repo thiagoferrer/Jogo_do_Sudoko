@@ -14,6 +14,8 @@ public class BoardService {
 
     private final Board board;
 
+
+
     public BoardService(final Map<String, String> gameConfig) {
         this.board = new Board(initBoard(gameConfig));
     }
@@ -51,5 +53,41 @@ public class BoardService {
             }
         }
         return spaces;
+    }
+
+    public boolean isValidMove(final int col, final int row, final int value) {
+        return board.isValidMove(col, row, value);
+    }
+
+    public java.util.List<Integer> candidates(final int col, final int row) {
+        return board.candidates(col, row);
+    }
+
+    /**
+     * opcionais, úteis para UI/console não tocarem no Board diretamente
+     */
+    public boolean changeValue(final int col, final int row, final int value) {
+        return board.changeValue(col, row, value);
+    }
+
+    public boolean clearValue(final int col, final int row) {
+        return board.clearValue(col, row);
+    }
+
+    /**
+     * contadores para mensagens mais ricas
+     */
+    public long countEmpty() {
+        return board.getSpaces().stream()
+                .flatMap(java.util.Collection::stream)
+                .filter(s -> s.getActual() == null)
+                .count();
+    }
+
+    public long countWrong() {
+        return board.getSpaces().stream()
+                .flatMap(java.util.Collection::stream)
+                .filter(s -> s.getActual() != null && !s.getActual().equals(s.getExpected()))
+                .count();
     }
 }

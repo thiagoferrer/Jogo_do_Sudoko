@@ -2,7 +2,6 @@ package br.com.dio.ui.custom.screen;
 
 import br.com.dio.model.Space;
 import br.com.dio.service.BoardService;
-import br.com.dio.service.EventEnum;
 import br.com.dio.service.NotifierService;
 import br.com.dio.ui.custom.button.CheckGameStatusButton;
 import br.com.dio.ui.custom.button.FinishGameButton;
@@ -38,9 +37,11 @@ public class MainScreen {
         this.notifierService = new NotifierService();
     }
 
+
     public void buildMainScreen() {
         JPanel mainPanel = new MainPanel(dimension);
         JFrame mainFrame = new MainFrame(dimension, mainPanel);
+
         for (int r = 0; r < 9; r += 3) {
             var endRow = r + 2;
             for (int c = 0; c < 9; c += 3) {
@@ -55,6 +56,7 @@ public class MainScreen {
         addFinishGameButton(mainPanel);
         mainFrame.revalidate();
         mainFrame.repaint();
+
     }
 
     private List<Space> getSpacesFromSector(final List<List<Space>> spaces,
@@ -95,14 +97,21 @@ public class MainScreen {
         checkGameStatusButton = new CheckGameStatusButton(e -> {
             var hasErrors = boardService.hasErros();
             var gameStatus = boardService.getStatus();
+
+            long vazios = boardService.countEmpty();
+            long errados = boardService.countWrong();
+
             var message = switch (gameStatus) {
                 case NON_STARTED -> "O jogo não iniciado";
                 case INCOMPLETE -> "O jogo está incompleto";
                 case COMPLETE -> "O jogo está completo";
             };
-            message += hasErrors ? " e contém erros" : " e não contém erros";
+            message += hasErrors ? " e contém erros." : " e não contém erros.";
+            message += "%nVazios: %d | Incorretos: %d".formatted(vazios, errados);
+
             showMessageDialog(null, message);
         });
+
         mainPanel.add(MainScreen.this.checkGameStatusButton);
 
     }
